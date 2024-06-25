@@ -1,0 +1,33 @@
+---
+- name: Ensure Docker is installed
+  tags: apptimus,portainer
+  apt:
+    name: docker.io
+    state: present
+    update_cache: yes
+
+- name: Download Portainer image
+  tags: apptimus,portainer
+  docker_image:
+    name: portainer/portainer-ce
+    source: pull
+
+- name: Create Portainer container
+  tags: apptimus,portainer
+  docker_container:
+    name: portainer
+    image: portainer/portainer-ce
+    state: started
+    restart_policy: always
+    ports:
+      - "8000:8000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+- name: Ensure portainer_data volume is created
+  tags: apptimus,portainer
+  docker_volume:
+    name: portainer_data
+    state: present

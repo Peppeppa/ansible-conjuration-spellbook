@@ -1,0 +1,81 @@
+---
+######################################################
+#
+#     INSTALL PORTAINER
+#
+######################################################
+# README:
+#   
+#
+
+#-----------------------------------------------------
+#   Header & variablen
+#
+- name: Portainer | load variables 
+  tags: tag1,portainer
+  set_fact:
+    port_1: "{{ lookup('vars', ansible_role_name + '_portainer_port1') }}"
+    port_2: "{{ lookup('vars', ansible_role_name + '_portainer_port2') }}"
+    var_3: "{{ beispiel_variable }}"
+    var_4: 
+
+#-----------------------------------------------------
+#   DEBUG
+#
+- name: Portainer | DEBUG - show loaded variables
+  tags: tag1,portainer,debug
+  debug:
+    msg: 
+      - "{{ port_1 }}"
+      - "{{ port_2 }}"
+      - "{{ var_3 }}"
+      - "{{ var_4 }}"
+
+
+#-----------------------------------------------------
+#   pre_tasks
+#
+
+#-----------------------------------------------------
+#   Main
+#
+- name: Portainer | Download Portainer image
+  tags: tag1,portainer
+  docker_image:
+    name: portainer/portainer-ce
+    source: pull
+
+- name: Portainer | Create Portainer container
+  tags: tag1,portainer
+  docker_container:
+    name: portainer
+    image: portainer/portainer-ce
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ port_1 }}:8000"
+      - "{{ port_2 }}:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+- name: Portainer | Ensure portainer_data volume is created
+  tags: tag1,portainer
+  docker_volume:
+    name: portainer_data
+    state: present
+
+
+#-----------------------------------------------------
+#   post_tasks
+#
+
+
+#-----------------------------------------------------
+#   Handlers
+#
+
+
+#-----------------------------------------------------
+#   roles
+#

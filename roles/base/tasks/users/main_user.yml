@@ -1,0 +1,45 @@
+- name: users | main_user | create group
+  tags: users,main_user,groups
+  group:
+    name: "{{ main_user }}"
+    state: present
+
+- name: users | main_user | create user 
+  tags: users,main_user,sudo
+  user:
+    name: "{{ main_user }}"
+    groups: "{{ sudo_group }}"
+    state: present
+    comment: "El-Admin"
+    password: "{{ main_user_passwd | password_hash('sha512') }}"
+    shell: /bin/bash
+
+- name: users | main_user | add sudoers file
+  tags: users,main_user,sudo,system
+  ansible.builtin.template:
+    src: templates/main_sudoers.j2
+    dest: "/etc/sudoers.d/{{ main_user}}"
+    mode: '0440'
+  become: true
+
+- name: users | main_user | create .ssh directory
+  tags: dotfiles,main_user,ssh,users
+  file:
+    path: "{{ item.dir}}"
+    state: directory
+    owner: medvidec
+    group: medvidec
+    mode: 0700
+  with_items:
+    - { dir: "{{ main_user_dir }}/.ssh"}
+
+- name: users | main_user | setup authorized keys
+  tags: users,main_user,ssh,users
+  ansible.posix.authorized_key:
+    user: "{{ main_user }}"
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - files/users/main_user/ssh-keys/ansible-controller.pub
+    - files/users/main_user/ssh-keys/t440p.pub
+    - files/users/main_user/ssh-keys/x1carbon.pub

@@ -1,0 +1,38 @@
+- name: users | architect_user | create group
+  tags: groups,architect_user,users
+  group:
+    name: "{{ architect_user }}"
+    state: present
+
+- name: users | architect_user | create user
+  tags: architect_user,sudo,users
+  user:
+    name: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    groups: root
+
+      #- name: users | hera | add public key
+      #  tags: dotfiles,hera,ssh,ssh-keys,users
+      #  authorized_key:
+      #    user: hera
+      #    key: "{{ item }}"
+      #  with_file:
+      #    - users/hera/hera_ed25519.pub
+
+#- name: users | {{ remote_user }} | add sudoers file
+#  tags: settings,remote_user,sudo,system,users
+#  copy:
+#    src: users/hera/sudoer_hera
+#    dest: /etc/sudoers.d/hera
+#    owner: root
+#    group: root
+#    mode: 0440
+
+- name: Copy sudoers file
+  tags: settings,architect_user,sudo,system,users
+  ansible.builtin.template:
+    src: templates/architect_sudoers.j2
+    dest: "/etc/sudoers.d/{{ architect_user }}"
+    mode: '0440'
+  become: true
+

@@ -1,0 +1,25 @@
+
+# Inhalt von /ansible/playbook.yml
+- hosts: all
+  #  vars_files:
+  #    - group_vars/user.yml
+  #
+  tasks: 
+    - name: pre-run | update package cache (arch)
+      tags: always
+      pacman: update_cache=yes
+      changed_when: False
+      when: ansible_distribution == "Archlinux"
+
+    - name: pre-run | update package cache (debian, etc)
+      tags: always
+      apt: update_cache=yes
+      changed_when: False
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  tasks:
+    - name: Example task using variables
+      debug:
+        msg: 
+          - "{{ main_user_dir }}"
+          - "{{ architect_user_dir }}"

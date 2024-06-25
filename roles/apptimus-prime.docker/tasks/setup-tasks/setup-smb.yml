@@ -1,0 +1,61 @@
+---
+- name: Debug role-specific variables
+  tags: apptimus,setup-smb
+  debug:
+    msg: "{{ ansible_role_name }} | {{ architect_user }} | {{ architect_user_dir }}/.smbcredentials | {{ nas_mount_point }} | //{{ nas_path }}{{ ansible_role_name }} | "
+
+- name: Install cifs-utils
+  tags: apptimus,setup-smb
+  ansible.builtin.package:
+    name: cifs-utils
+    state: present
+
+- name: Create smbcredentials file
+  tags: apptimus,setup-smb
+  ansible.builtin.template:
+    src: templates/smbcredentials.j2
+    dest: "{{ architect_user_dir }}/.smbcredentials"
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    mode: "0600"
+
+- name: Create mount directory
+  tags: apptimus,setup-smb
+  ansible.builtin.file:
+    path: "{{ nas_mount_point }}"
+    state: directory
+    mode: '0755'
+
+- name: restart target maschine to make smb work
+  tags: apptimus,setup-smb
+  reboot:
+    reboot_timeout: 300
+    pre_reboot_delay: 30
+
+- name: Mount SMB share
+  tags: apptimus,setup-smb
+  ansible.builtin.mount:
+    path: "{{ nas_mount_point }}"
+    src: "//{{ nas_path }}{{ ansible_role_name }}"
+    fstype: cifs
+    opts: "credentials={{ architect_user_dir }}/.smbcredentials,uid={{ architect_user }},gid={{ architect_user }},vers=3.0,iocharset=iso8859-1,_netdev"  
+    state: mounted
+  become: true
+
+- name: Ensure NAS mount is persistent across reboots
+  tags: apptimus,setup-smb
+  lineinfile:
+    path: /etc/fstab
+    line: "//{{ nas_path }}{{ ansible_role_name }} {{ nas_mount_point }} cifs credentials={{ architect_user_dir }}/.smbcredentials,uid={{ architect_user }},gid={{ architect_user }},vers=3.0,iocharset=iso8859-1,_netdev 0 0"
+    state: present
+  become: yes
+
+#- name: Set permissions on /mnt/storage
+#  tags: apptimus,setup-smb,permission
+#  ansible.builtin.file:
+#    path: /mnt
+#    owner: root #hera
+#    group: root #hera
+#    mode: "0777"
+#    recurse: yes
+#  become: yes

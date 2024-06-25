@@ -1,0 +1,101 @@
+---
+######################################################
+#
+#    mount a smb drive 
+#
+######################################################
+# README:
+#   creates a mountpoint and mounts a smb drive using variables
+#
+# usage:  define variables in var file and rename the var1... to those variables
+#         rename tags & name
+
+#-----------------------------------------------------
+#   Header & variablen
+#
+- name: name1 | load variables 
+  tags: tag1,tag2
+  set_fact:
+    user: "{{ var1 }}"      #gets ownership and rights to files and mounts
+    smb_cred_file: "{{ var2 }}/.smbcredentials"
+    local_mountpoint: "{{ var3 }}"
+    remote_mountpoint: "{{ var4 }}"
+
+
+#-----------------------------------------------------
+#   DEBUG
+#
+- name: name1 | DEBUG show variables
+  tags: tag1,tag2,debug
+  debug:
+    msg: 
+      - "{{ user }} - {{ var2 }}"
+      - "{{ smb_cred_file }} - {{ var2 }}/.smbcredentials"
+      - "{{ local_mountpoint }} - {{ var3 }}"
+      - "{{ remote_mountpoint }} - {{ var4 }}"
+
+#-----------------------------------------------------
+#   pre_tasks
+#
+- name: name1 | Install cifs-utils
+  tags: tag1,tag2
+  ansible.builtin.package:
+    name: cifs-utils
+    state: present
+#register: package_install_smb_nas  #alte reboot funktion ohne handler
+  notify: handler | reboot
+
+#-----------------------------------------------------
+#   Main
+#
+- name: name1 | Create smbcredentials file
+  tags: tag1,tag2
+  ansible.builtin.template:
+    src: templates/smbcredentials.j2
+    dest: "{{ smb_cred_file }}"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0600"
+
+- name: name1 | Create mount directory
+  tags: tag1,tag2
+  ansible.builtin.file:
+    path: "{{ local_mountpoint }}"
+    state: directory
+    mode: '0755'
+
+- name: name1 | Mount SMB share
+  tags: tag1,tag2
+  ansible.builtin.mount:
+    path: "{{ local_mountpoint }}"
+    src: "//{{ remote_mountpoint }}"
+    fstype: cifs
+    opts: "credentials={{ smb_cred_file }},uid={{ user }},gid={{ user }},vers=3.0,iocharset=iso8859-1,_netdev"  
+    state: mounted
+  become: true
+
+
+#-----------------------------------------------------
+#   post_tasks
+#
+- name: name1 | Ensure NAS mount is persistent across reboots
+  tags: tag1,tag2
+  lineinfile:
+    path: /etc/fstab
+    line: "//{{ remote_mountpoint }} {{ local_mountpoint }} cifs credentials={{ smb_cred_file }},uid={{ user }},gid={{ user }},vers=3.0,iocharset=iso8859-1,_netdev 0 0"
+    state: present
+  become: yes
+
+
+#-----------------------------------------------------
+#   Handlers
+#
+
+
+#-----------------------------------------------------
+#   roles
+#
+
+
+
+

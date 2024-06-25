@@ -1,0 +1,41 @@
+- name: Create base directory for Paperless-NGX
+  tags: paperless,pl_dir
+  file:
+    path: /mnt/storage/paperless
+    state: directory
+    mode: '0755'
+    owner: medvidec
+    group: medvidec
+
+- name: Create data directory
+  tags: paperless,pl_dir
+  file:
+    path: /mnt/storage/paperless/data
+    state: directory
+    mode: '0755'
+    owner: medvidec
+    group: medvidec
+
+- name: Create media directory
+  tags: paperless,pl_dir
+  file:
+    path: /mnt/storage/paperless/media
+    state: directory
+    mode: '0755'
+    owner: medvidec
+    group: medvidec
+
+- name: Create consume directory
+  tags: paperless,pl_dir
+  file:
+    path: /mnt/storage/paperless/consume
+    state: directory
+    mode: '0755'
+    owner: medvidec
+    group: medvidec
+
+- name: tead down existing services
+  tags: paperless
+  community.docker.docker_compose:
+
+

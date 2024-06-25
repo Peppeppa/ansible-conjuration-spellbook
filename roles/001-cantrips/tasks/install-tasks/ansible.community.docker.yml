@@ -1,0 +1,11 @@
+---
+    - name: Install community.docker collection
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install community.docker
+      args:
+        creates: /path/to/ansible_collections/community/docker
+
+    - name: Include apptimus-prime.docker role
+      import_role:
+        name: apptimus-prime.docker
+

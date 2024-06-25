@@ -1,0 +1,65 @@
+---
+- name: Ensure git is installed
+  tags: dotfiles
+  ansible.builtin.package:
+    name: git
+    state: present
+
+- name: Ensure stow is installed
+  tags: dotfiles
+  ansible.builtin.package:
+    name: stow
+    state: present
+
+- name: Create git directory in home folder
+  tags: dotfiles
+  ansible.builtin.file:
+    path: "{{ architect_user_dir }}/git"
+    state: directory
+    mode: '0755'
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+
+- name: Clone dotfiles repository
+  tags: dotfiles
+  ansible.builtin.git:
+    repo: 'https://github.com/Peppeppa/dotfiles.git'
+    dest: '{{ architect_user_dir }}/git/dotfiles'
+    update: yes
+#    owner: "{{ architect_user }}"
+#    group: "{{ architect_user }}"
+
+- name: Ensure scripts directory exists in home folder
+  tags: dotfiles
+  ansible.builtin.file:
+    path: "{{ architect_user_dir }}/scripts"
+    state: directory
+    mode: '0755'
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+
+
+      
+- name: Copy stow.sh script to ~/scripts
+  tags: dotfiles
+  ansible.builtin.copy:
+    src: scripts/stow.sh
+    dest: "{{ architect_user_dir }}/scripts/stow.sh"
+    mode: '0755'
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+
+- name: Delete existing files in the home directory
+  tags: dotfiles
+  file:
+    path: "{{ architect_user_dir }}/.bashrc"
+    state: absent
+
+- name: Execute the stow.sh script
+  tags: dotfiles
+  command: "{{ architect_user_dir }}/scripts/stow.sh"
+  args:
+    chdir: "{{ architect_user_dir }}/scripts"
+  environment:
+    HOME: "{{ architect_user_dir }}"
+

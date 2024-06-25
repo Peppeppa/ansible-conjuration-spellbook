@@ -1,0 +1,44 @@
+# Playbook für meine Server Umgebung
+#
+
+
+- hosts: all
+  connection: local
+  tags: always
+  become: true
+  pre_tasks:
+    - name: pre-run | update package cache (arch)
+      tags: always
+      pacman: update_cache=yes
+      changed_when: False
+      when: ansible_distribution == "Archlinux"
+
+    - name: pre-run | update package cache (debian, etc)
+      tags: always
+      apt: update_cache=yes
+      changed_when: False
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+    - name: Load variables
+      tags: always
+      include_vars: all
+
+    # run roles
+- hosts: all
+  tags: base
+  become: true
+  roles:
+    - base
+
+    # run roles
+- hosts: apptimus-prime
+  tags: docker-host
+  become: true
+  roles:
+    - apptimus-prime.docker
+
+- hosts: custos-archivi-primus
+  tags: backup-offsite
+  become: true
+  roles:
+    - custos-archivi-primus

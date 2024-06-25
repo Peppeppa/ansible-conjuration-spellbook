@@ -1,0 +1,93 @@
+# Install Docker
+#--- 
+#- name: Setup Docker | install packages
+#  tags: software,packages,Docker
+#  package:
+#    name:
+#      - docker.io
+#      - docker-compose
+#    state: latest
+
+
+---
+
+- name: Install required packages
+  tags: apptimus,dockerce
+  apt:
+    name: 
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+    state: present
+    update_cache: yes
+
+- name: Add Docker’s official GPG key
+  tags: apptimus,dockerce
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repository
+  tags: apptimus,dockerce
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    state: present
+
+- name: Install Docker
+  tags: apptimus,dockerce
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: yes
+
+- name: Install pip
+  tags: apptimus,dockerce
+  apt:
+    name: python3-pip
+    state: present
+    update_cache: yes
+
+- name: Install pipx
+  tags: apptimus,dockerce
+  apt:
+    name: pipx
+    state: present
+    update_cache: yes
+
+
+- name: Install Docker-compose
+  tags: apptimus,dockerce
+  apt:
+    name: docker-compose
+    state: latest
+    update_cache: yes
+
+#- name: Install Docker.io
+#  tags: apptimus,dockerce
+#  apt:
+#    name: docker.io
+#    state: latest
+#    update_cache: yes
+
+
+#- name: Install Docker Compose using pip
+#  tags: apptimus,dockerce
+#  community.general.pipx:
+#    name: docker-compose
+#    state: latest
+
+- name: Ensure Docker service is started
+  tags: apptimus,dockerce
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Add user to Docker group
+  tags: apptimus,dockerce
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes

@@ -1,0 +1,44 @@
+#Laden distrospezifischer variablen
+#- include_vars: "{{ ansible_distribution }}.yml"
+  #  tag: always
+    #  paths: vars
+- name: Lade distributionsspezifische Variablen
+  tags: vars
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+  tags: always
+
+- name: Include vars from vars.yml
+  tags: vars
+  include_vars: 
+    file: "{{ role_path }}/vars/vars.yml"
+
+- name: Include vars from vault.yml
+  tags: vars
+  include_vars: 
+    file: "{{ role_path }}/vars/vault.yml"
+
+- block:
+ #Erstellen von Usern
+  - import_tasks: users/main_user.yml
+  - import_tasks: users/root.yml
+  - import_tasks: users/architect_user.yml
+
+  # Einrichten der ansible umgebung
+  - import_tasks: ansible_setup.yml
+
+  # Install software
+  #  - import_tasks: software/repositories.yml
+  - import_tasks: software/packages_development.yml
+  #  - import_tasks: software/packages_pip.yml
+  - import_tasks: software/packages_utils.yml
+  - import_tasks: software/dotfiles.yml
+  - import_tasks: software/packages_cleanup.yml
+
+  # Perform remaining import_tasks
+  - import_tasks: system-setup/clock.yml
+  - import_tasks: system-setup/cron.yml
+  - import_tasks: system-setup/locale.yml
+  - import_tasks: system-setup/logging.yml
+  - import_tasks: system-setup/openssh.yml

@@ -1,0 +1,31 @@
+---
+#  Handler library
+#
+#  library of common used handlers, perpetually updated
+#  maybe linked to a template and added to the skeleton role template??
+#  ma schauen
+#
+#
+#------------------------------------------------------
+#  deamon und services reload handlers
+#
+- name: handler | reload system
+  command: systemctl daemon-reload
+  become: true
+
+#------------------------------------------------------
+#  system do stuff handlers
+#
+- name: handler | reboot
+  ansible.builtin.reboot:
+    msg: "Reboot initiated by Ansible playbook"
+    connect_timeout: 5
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: whoami
+  become: true
+
+#-----------------------------------------------------
+#  whatever may  come handlers
+#  -> do some categorys 
