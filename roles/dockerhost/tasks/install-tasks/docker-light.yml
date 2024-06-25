@@ -1,9 +1,0 @@
-
---- 
-- name: Setup Docker | install packages
-  tags: apptimus,docker
-  package:
-    name:
-      - docker.io
-      - docker-compose
-    state: latest
