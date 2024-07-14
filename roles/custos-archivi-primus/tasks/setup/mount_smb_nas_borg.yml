@@ -7,14 +7,14 @@
 # README:
 #   creates a mountpoint and mounts a smb drive using variables
 #
-# usage: define variables in var file and rename the var1... to those variables
-#
+# usage:  define variables in var file and rename the architect_user... to those variables
+#         rename tags & name
 
 #-----------------------------------------------------
 #   Header & variablen
 #
-- name: smb-NAS | load smb variables
-  tags: archivi,smb-nas
+- name: NAS_SMB_mount | load variables
+  tags: archivi,nas_smb
   set_fact:
     user: "{{ architect_user }}" #gets ownership and rights to files and mounts
     smb_cred_file: "{{ architect_user_dir }}/.smbcredentials"
@@ -24,8 +24,8 @@
 #-----------------------------------------------------
 #   DEBUG
 #
-- name: smb-NAS | DEBUG show variables
-  tags: archivi,smb-nas,debug
+- name: NAS_SMB_mount | DEBUG show variables
+  tags: archivi,nas_smb,debug
   debug:
     msg:
       - "{{ user }} - {{ architect_user_dir }}"
@@ -36,8 +36,8 @@
 #-----------------------------------------------------
 #   pre_tasks
 #
-- name: smb-NAS | Install cifs-utils
-  tags: archivi,smb-nas
+- name: NAS_SMB_mount | Install cifs-utils
+  tags: archivi,nas_smb
   ansible.builtin.package:
     name: cifs-utils
     state: present
@@ -47,8 +47,8 @@
 #-----------------------------------------------------
 #   Main
 #
-- name: smb-NAS | Create smbcredentials file
-  tags: archivi,smb-nas
+- name: NAS_SMB_mount | Create smbcredentials file
+  tags: archivi,nas_smb
   ansible.builtin.template:
     src: templates/smbcredentials.j2
     dest: "{{ smb_cred_file }}"
@@ -56,15 +56,15 @@
     group: "{{ user }}"
     mode: "0600"
 
-- name: smb-NAS | Create mount directory
-  tags: archivi,smb-nas
+- name: NAS_SMB_mount | Create mount directory
+  tags: archivi,nas_smb
   ansible.builtin.file:
     path: "{{ local_mountpoint }}"
     state: directory
     mode: "0755"
 
-- name: smb-NAS | Mount SMB share
-  tags: archivi,smb-nas
+- name: NAS_SMB_mount | Mount SMB share
+  tags: archivi,nas_smb
   ansible.builtin.mount:
     path: "{{ local_mountpoint }}"
     src: "//{{ remote_mountpoint }}"
@@ -76,8 +76,8 @@
 #-----------------------------------------------------
 #   post_tasks
 #
-- name: smb-NAS | Ensure NAS mount is persistent across reboots
-  tags: archivi,smb-nas
+- name: NAS_SMB_mount | Ensure NAS mount is persistent across reboots
+  tags: archivi,nas_smb
   lineinfile:
     path: /etc/fstab
     line: "//{{ remote_mountpoint }} {{ local_mountpoint }} cifs credentials={{ smb_cred_file }},uid={{ user }},gid={{ user }},vers=3.0,iocharset=iso8859-1,_netdev 0 0"

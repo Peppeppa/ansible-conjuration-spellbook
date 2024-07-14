@@ -4,11 +4,12 @@
 #  include_vars: "{{ role_path }}/vars/docker-ports.yml"
 
 - block:
-  #  - import_tasks: "{{ role_path }}/tasks/setup/smb-nas-downloads.yml"
-  - import_tasks: "{{ role_path }}/tasks/setup/docker-ce-complete.yml"
-  - import_tasks: "{{ role_path }}/tasks/setup/mount_smb_nas.yml"
-  - import_tasks: "{{ role_path }}/tasks/setup/portainer.yml"
-  - import_tasks: "{{ role_path }}/tasks/setup/gocryptfs.yml"
-    
-    #    Apps     
+    #  - import_tasks: "{{ role_path }}/tasks/setup/smb-nas-downloads.yml"
+    - import_tasks: "{{ role_path }}/tasks/setup/docker-ce-complete.yml"
+    #  - import_tasks: "{{ role_path }}/tasks/setup/mount_smb_nas.yml"
+    - import_tasks: "{{ role_path }}/tasks/setup/mount_smb_nas_borg.yml"
+    - import_tasks: "{{ role_path }}/tasks/setup/portainer.yml"
+  #  - import_tasks: "{{ role_path }}/tasks/setup/gocryptfs.yml"
+
+  #    Apps
 #  - import_tasks: "{{ role_path }}/tasks/docker-compose/paperless.yml"
