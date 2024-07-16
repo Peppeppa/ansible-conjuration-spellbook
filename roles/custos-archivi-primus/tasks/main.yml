@@ -10,6 +10,7 @@
     - import_tasks: "{{ role_path }}/tasks/setup/mount_smb_nas_borg.yml"
     - import_tasks: "{{ role_path }}/tasks/setup/portainer.yml"
   #  - import_tasks: "{{ role_path }}/tasks/setup/gocryptfs.yml"
+    - import_tasks: "{{ role_path }}/tasks/setup/setup_borg_scripts.yml"
 
   #    Apps
 #  - import_tasks: "{{ role_path }}/tasks/docker-compose/paperless.yml"

@@ -5,7 +5,8 @@
 #
 ######################################################
 # README:
-#
+# Downloads and sets up borg backup scripts from my Github Repo.
+# 
 #
 
 #-----------------------------------------------------
@@ -40,8 +41,37 @@
 #-----------------------------------------------------
 #   Main
 #
+- name: BORG | Ensure borg_script_path directory exists
+  tags: archivi,borg
+  file:
+    path: "{{ borg_script_path }}"
+    state: directory
+    mode: '0755'
+
+- name: BORG | Clone the Borg backup scripts repository
+  tags: archivi,borg,git
+  git:
+    repo: "git@github.com:Peppeppa/borg-backupscript.git"
+    dest: "{{ borg_script_path }}"
+    version: main  # Specify the branch or tag if needed
+    force: yes
+
+- name: BORG | Ensure borg_restore_mount directory exists
+  tags: archivi,borg
+  file:
+    path: "{{ borg_restore_mount }}"
+    state: directory
+    mode: '0755'
+
+- name: BORG | Ensure borg_log_directory exists
+  tags: archivi,borg
+  file:
+    path: "{{ borg_log_directory }}"
+    state: directory
+    mode: '0755'
 
 - name: BORG | create config.env
+  tags: archivi,borg
   template:
     src: templates/env.j2
     dest: "{{ borg-script-path }}/config.env"
