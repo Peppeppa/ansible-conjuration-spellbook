@@ -54,10 +54,12 @@
   file:
     path: "{{ borg_script_path }}"
     state: directory
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}" 
     mode: '0755'
 
 - name: BORG | Clone the Borg backup scripts repository
-  tags: archivi,borg,borg_update
+  tags: archivi,borg,borg_update,git
   git:
     repo: "https://github.com/Peppeppa/borg-backupscript.git"
     dest: "{{ borg_script_path }}"
@@ -69,6 +71,8 @@
   file:
     path: "{{ borg_restore_mount }}"
     state: directory
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}" 
     mode: '0755'
 
 - name: BORG | Ensure borg_log_directory exists
@@ -76,13 +80,15 @@
   file:
     path: "{{ borg_log_directory }}"
     state: directory
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}" 
     mode: '0755'
 
 - name: BORG | create config.env
   tags: archivi,borg,env,borg_update
   ansible.builtin.template: 
     src: templates/env.j2
-    dest: "{{ borg_script_path }}/config.env"
+    dest: "{{ borg_script_path }}/.env"
     owner: "{{ architect_user }}"
     group: "{{ architect_user }}" 
     mode: '0600'
@@ -130,6 +136,8 @@
   file:
     path: "{{ hetzner_storagebox_mountpoint }}/.ssh"
     state: directory
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}" 
     mode: '0700' 
 
 - name: BORG | Ensure authorized_keys is in hetzner storagebox
@@ -137,6 +145,8 @@
   file:
     path: "{{ hetzner_storagebox_mountpoint }}/.ssh/authorized_keys"
     state: touch
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}" 
     mode: '0600' 
 
 - name: BORG | copy pubilc ssh key to authorized_keys
@@ -152,8 +162,10 @@
 - name: BORG | Ensure directory for borg backup repo is in storagebox
   tags: archivi,borg,borg_update,borg_ssh
   file:
-    path: "{{ hetzner_storagebox_backuprepo1}}"
+    path: "{{ hetzner_storagebox_backuprepo_1 }}"
     state: directory
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}" 
     mode: '0700' 
 
 #- name: BORG | copy ssh to authorized keys in hetzner

@@ -34,14 +34,14 @@
 #-----------------------------------------------------
 #   pre_tasks
 #
-- name: mnt_hetzner | Ensure required packages are installed
-  tags: archivi,mnt_hetzner,pre
-  ansible.builtin.package:
-    name:
-      - cifs-utils
-    state: present
+#- name: mnt_hetzner | Ensure required packages are installed
+  #  tags: archivi,mnt_hetzner
+  #ansible.builtin.package:
+    #  name:
+      #  - cifs-utils
+    #state: present
       #  register: package_install_mnt_hetzner
-    notify: handler | reboot
+    #notify: handler | reboot
 
 
 #-----------------------------------------------------

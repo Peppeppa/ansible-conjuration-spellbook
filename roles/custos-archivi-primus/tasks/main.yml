@@ -8,6 +8,16 @@
     - "{{ ansible_distribution }}.yml"
   tags: always
 
+- name: Include vars from vars.yml
+  tags: vars
+  include_vars: 
+    file: "{{ role_path }}/vars/vars.yml"
+
+- name: Include vars from vault.yml
+  tags: vars
+  include_vars: 
+    file: "{{ role_path }}/vars/vault.yml"
+
 - block:
     #  - import_tasks: "{{ role_path }}/tasks/setup/smb-nas-downloads.yml"
     - import_tasks: "{{ role_path }}/tasks/setup/docker-ce-complete.yml"
