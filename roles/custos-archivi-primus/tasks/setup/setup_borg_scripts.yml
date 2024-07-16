@@ -41,44 +41,51 @@
 #-----------------------------------------------------
 #   Main
 #
+- name: BORG | Ensure borg is installed
+  tags: archivi,borg,borg_update
+  package:
+    name: 
+      - borg
+    state: present
+    update_cache: yes
+
 - name: BORG | Ensure borg_script_path directory exists
-  tags: archivi,borg
+  tags: archivi,borg,borg_update
   file:
     path: "{{ borg_script_path }}"
     state: directory
     mode: '0755'
 
 - name: BORG | Clone the Borg backup scripts repository
-  tags: archivi,borg,git
+  tags: archivi,borg,borg_update
   git:
-    repo: "git@github.com:Peppeppa/borg-backupscript.git"
+    repo: "https://github.com/Peppeppa/borg-backupscript.git"
     dest: "{{ borg_script_path }}"
     version: main  # Specify the branch or tag if needed
     force: yes
 
 - name: BORG | Ensure borg_restore_mount directory exists
-  tags: archivi,borg
+  tags: archivi,borg,borg_update
   file:
     path: "{{ borg_restore_mount }}"
     state: directory
     mode: '0755'
 
 - name: BORG | Ensure borg_log_directory exists
-  tags: archivi,borg
+  tags: archivi,borg,borg_update
   file:
     path: "{{ borg_log_directory }}"
     state: directory
     mode: '0755'
 
 - name: BORG | create config.env
-  tags: archivi,borg
-  template:
+  tags: archivi,borg,env,borg_update
+  ansible.builtin.template: 
     src: templates/env.j2
-    dest: "{{ borg-script-path }}/config.env"
-  owner: {{ architect_user }}
-  group: {{ architect_user }} 
-  mode: '0644'
-
+    dest: "{{ borg_script_path }}/config.env"
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}" 
+    mode: '0600'
 
 #-----------------------------------------------------
 #   post_tasks
