@@ -45,7 +45,7 @@
   tags: archivi,borg,borg_update
   package:
     name: 
-      - borg
+      - "{{ borg_package }}"
     state: present
     update_cache: yes
 
