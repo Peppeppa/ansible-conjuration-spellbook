@@ -35,7 +35,7 @@
 #   pre_tasks
 #
 - name: mnt_hetzner | Ensure required packages are installed
-  tags: archivi,mnt_hetzner
+  tags: archivi,mnt_hetzner,pre
   ansible.builtin.package:
     name:
       - cifs-utils
