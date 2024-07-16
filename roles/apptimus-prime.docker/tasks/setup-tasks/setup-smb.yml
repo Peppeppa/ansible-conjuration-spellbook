@@ -42,14 +42,6 @@
     state: mounted
   become: true
 
-- name: Ensure NAS mount is persistent across reboots
-  tags: apptimus,setup-smb
-  lineinfile:
-    path: /etc/fstab
-    line: "//{{ nas_path }}{{ ansible_role_name }} {{ nas_mount_point }} cifs credentials={{ architect_user_dir }}/.smbcredentials,uid={{ architect_user }},gid={{ architect_user }},vers=3.0,iocharset=iso8859-1,_netdev 0 0"
-    state: present
-  become: yes
-
 #- name: Set permissions on /mnt/storage
 #  tags: apptimus,setup-smb,permission
 #  ansible.builtin.file:

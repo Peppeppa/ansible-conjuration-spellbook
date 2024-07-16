@@ -3,7 +3,6 @@
 #- name: Include vars from vars.yml
 #  include_vars: "{{ role_path }}/vars/docker-ports.yml"
 - name: Lade distributionsspezifische Variablen
-  tags: vars
   include_vars: "{{ item }}"
   with_first_found:
     - "{{ ansible_distribution }}.yml"

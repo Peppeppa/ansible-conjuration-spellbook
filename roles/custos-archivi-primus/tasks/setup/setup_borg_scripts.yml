@@ -87,6 +87,82 @@
     group: "{{ architect_user }}" 
     mode: '0600'
 
+- name: BORG | Ensure .ssh directory exists
+  tags: archivi,borg,borg_update,borg_ssh
+  file:
+    path: /home/{{ architect_user }}/.ssh
+    state: directory
+    mode: '0700'
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+
+- name: BORG | Generate SSH key pair
+  tags: archivi,borg,borg_update,borg_ssh
+  openssh_keypair:
+    path: /home/{{ architect_user }}/.ssh/id_rsa
+    type: rsa
+    size: 2048
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    mode: '0600'
+  register: keypair
+
+- name: BORG | Ensure the public key file has correct permissions
+  tags: archivi,borg,borg_update,borg_ssh
+  file:
+    path: "{{ architect_user_dir }}/.ssh/id_rsa.pub"
+    state: file
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    mode: '0644'
+
+- name: BORG | Ensure hetzner is in fstab
+  tags: archivi,borg,borg_update,borg_ssh
+  lineinfile:
+    path: /etc/fstab
+    line: "//{{ hetzner_storagebox_path }} {{ hetzner_storagebox_mountpoint }} cifs credentials={{ architect_user_dir }}/.cloudcredentials,iocharset=utf8,rw,_netdev,uid={{ architect_user }},gid={{ architect_user }},file_mode=0660,dir_mode=0770 0 0"
+    dest: "{{ architect_user_dir }}/.cloudcredentials"
+    state: present
+  become: yes
+
+- name: BORG | Ensure .ssh folder is in hetzner storagebox
+  tags: archivi,borg,borg_update,borg_ssh
+  file:
+    path: "{{ hetzner_storagebox_mountpoint }}/.ssh"
+    state: directory
+    mode: '0700' 
+
+- name: BORG | Ensure authorized_keys is in hetzner storagebox
+  tags: archivi,borg,borg_update,borg_ssh
+  file:
+    path: "{{ hetzner_storagebox_mountpoint }}/.ssh/authorized_keys"
+    state: touch
+    mode: '0600' 
+
+- name: BORG | copy pubilc ssh key to authorized_keys
+  tags: archivi,borg,borg_update,borg_ssh
+  copy:
+    src: "{{ architect_user_dir }}/.ssh/id_rsa.pub"
+    dest: "{{ hetzner_storagebox_mountpoint }}/.ssh/authorized_keys"
+    remote_src: yes
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    mode: '0600' 
+
+- name: BORG | Ensure directory for borg backup repo is in storagebox
+  tags: archivi,borg,borg_update,borg_ssh
+  file:
+    path: "{{ hetzner_storagebox_backuprepo1}}"
+    state: directory
+    mode: '0700' 
+
+#- name: BORG | copy ssh to authorized keys in hetzner
+  #  tags: archivi,borg,borg_update,borg_ssh
+  #lineinfile:
+    #  path: /mnt/storagebox/authorized_keys
+    #line: "{{ lookup('file', architect_user_dir ~ '/.ssh/id_rsa.pub') }}"
+    #state: present
+
 #-----------------------------------------------------
 #   post_tasks
 #
