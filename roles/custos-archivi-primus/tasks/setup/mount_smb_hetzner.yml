@@ -1,7 +1,6 @@
 ---
 ######################################################
 #
-#     install Gocryptfs and make connection to hetzner storagebox via smb
 #
 ######################################################
 # README:
@@ -34,14 +33,6 @@
 #-----------------------------------------------------
 #   pre_tasks
 #
-#- name: mnt_hetzner | Ensure required packages are installed
-  #  tags: archivi,mnt_hetzner
-  #ansible.builtin.package:
-    #  name:
-      #  - cifs-utils
-    #state: present
-      #  register: package_install_mnt_hetzner
-    #notify: handler | reboot
 
 
 #-----------------------------------------------------
@@ -75,10 +66,6 @@
     group: "{{ architect_user }}"
     mode: '0600'
 
-#- name: Neustarten des Servers
-  #  tags: archivi,mnt_hetzner
-  #reboot:
-    #  reboot_timeout: 600 
 
 - name: mnt_hetzner | Mount the SMB share
   tags: archivi,mnt_hetzner
@@ -89,10 +76,6 @@
     opts: "credentials={{ architect_user_dir }}/.cloudcredentials,iocharset=utf8,rw,_netdev,uid={{ architect_user}},gid={{ architect_user}},file_mode=0660,dir_mode=0770"
     state: mounted
   become: true
-
-#- name: mnt_hetzner | mount a
-  #  tags: archivi,mnt_hetzner,mountcryptfs
-  #command: mount -a -vvv
 
 
 #-----------------------------------------------------

@@ -1,15 +1,23 @@
 ---
-- name: DOTFILES | Ensure git is installed
+- name: DOTFILES | Ensure required packages are installed
   tags: dotfiles
   ansible.builtin.package:
-    name: git
+    name:
+      - git
+      - stow
     state: present
 
-- name: DOTFILES | Ensure stow is installed
-  tags: dotfiles
-  ansible.builtin.package:
-    name: stow
-    state: present
+#- name: DOTFILES | Ensure git is installed
+#  tags: dotfiles
+  #  ansible.builtin.package:
+    #  name: git
+    #state: present
+
+#- name: DOTFILES | Ensure stow is installed
+  #  tags: dotfiles
+  #ansible.builtin.package:
+    #  name: stow
+    #state: present
 
 - name: DOTFILES | Create git directory in home folder
   tags: dotfiles
@@ -34,6 +42,15 @@
     owner: "{{ architect_user }}"
     group: "{{ architect_user }}"
     state: directory
+
+- name: DOTFILES | Setze Besitzer und Gruppe für das geklonte Repository
+  tags: dotfiles,configfiles
+  file:
+    path: '{{ architect_user_dir }}/.config'
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    state: directory
+
 
 #- name: Ensure scripts directory exists in home folder
   #  tags: dotfiles

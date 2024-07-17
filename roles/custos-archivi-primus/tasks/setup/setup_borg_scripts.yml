@@ -46,8 +46,18 @@
   package:
     name: 
       - "{{ borg_package }}"
+      - fuse
     state: present
     update_cache: yes
+
+- name: Install Python packages for FUSE support
+  tags: archivi,borg,borg_update
+  tags: dotfiles
+  ansible.builtin.pip:
+    name:
+      - pyfuse3
+      - llfuse
+    state: present
 
 - name: BORG | Ensure borg_script_path directory exists
   tags: archivi,borg,borg_update
