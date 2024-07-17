@@ -75,6 +75,11 @@
     group: "{{ architect_user }}"
     mode: '0600'
 
+#- name: Neustarten des Servers
+  #  tags: archivi,mnt_hetzner
+  #reboot:
+    #  reboot_timeout: 600 
+
 - name: mnt_hetzner | Mount the SMB share
   tags: archivi,mnt_hetzner
   ansible.builtin.mount:

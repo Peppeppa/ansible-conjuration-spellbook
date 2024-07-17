@@ -61,7 +61,7 @@
 - name: BORG | Clone the Borg backup scripts repository
   tags: archivi,borg,borg_update,git
   git:
-    repo: "https://github.com/Peppeppa/borg-backupscript.git"
+    repo: "https://github.com/Peppeppa/borg-backup.git"
     dest: "{{ borg_script_path }}"
     version: main  # Specify the branch or tag if needed
     force: yes
@@ -84,7 +84,7 @@
     group: "{{ architect_user }}" 
     mode: '0755'
 
-- name: BORG | create config.env
+- name: BORG | create .env
   tags: archivi,borg,env,borg_update
   ansible.builtin.template: 
     src: templates/env.j2
