@@ -9,14 +9,28 @@
 
 - name: update_tmux_plugin_perms
   file:
-    path: /home/jay/.tmux/plugins
-    owner: jay
-    group: jay
+    path: "{{ architect_user_dir }}/.tmux/plugins"
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
     recurse: true
 
 - name: update_vim_bundle_perms
   file:
-    path: /home/jay/.vim/bundle
-    owner: jay
-    group: jay
+    path: "{{ architect_user_dir }}/.vim/bundle"
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    recurse: true
+
+- name: update_tmux_plugin_perms
+  file:
+    path: "{{ main_user_dir }}/.tmux/plugins"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
+    recurse: true
+
+- name: update_vim_bundle_perms
+  file:
+    path: "{{ main_user_dir }}/.vim/bundle"
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
     recurse: true
