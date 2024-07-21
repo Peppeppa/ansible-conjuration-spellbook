@@ -7,5 +7,5 @@
 
 - block:
     - import_tasks: "{{ role_path }}/tasks/setup/mount_smb_nas_borg.yml"
-  #- import_tasks: "{{ role_path }}/tasks/setup/mount_smb_hetzner.yml"
+    - import_tasks: "{{ role_path }}/tasks/setup/mount_smb_hetzner.yml"
     - import_tasks: "{{ role_path }}/tasks/setup/setup_borg_scripts.yml"

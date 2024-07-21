@@ -1,4 +1,5 @@
 vars/all
 /inv_test-system-inventory
 /ansible.cfg
-
+inventory
+plbook-provision-pxmx.yml

@@ -178,6 +178,13 @@
     #line: "{{ lookup('file', architect_user_dir ~ '/.ssh/id_rsa.pub') }}"
     #state: present
 
+- name: Unmount the filesystem
+  tags: archivi,borg,borg_update,borg_ssh
+  ansible.builtin.mount:
+    name: /mnt/storagebox
+    state: unmounted
+  become: yes
+
 #-----------------------------------------------------
 #   post_tasks
 #
