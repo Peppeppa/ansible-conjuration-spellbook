@@ -1,0 +1,98 @@
+
+---
+######################################################
+#
+#
+######################################################
+# README:
+#
+#
+
+#-----------------------------------------------------
+#   Header & variablen
+#
+#- name: task_name | load variables 
+#  tags: archivi,mnt_hetzner
+#  set_fact:
+#    var_1: 
+#    var_2: 
+#    var_3: "{{ beispiel_variable }}"
+#    var_4: 
+
+#-----------------------------------------------------
+#   DEBUG
+#
+- name: task_name | DEBUG - show loaded variables
+  tags: archivi,mnt_hetzner,debug
+  debug:
+    msg: 
+      - "{{ architect_user_dir }}"
+      - "{{ architect_user }}"
+      - "{{ hetzner_storagebox_user }}"
+
+
+#-----------------------------------------------------
+#   pre_tasks
+#
+
+
+#-----------------------------------------------------
+#   Main
+#
+- name: mnt_hetzner | Create cloudcredentials from template
+  tags: archivi,mnt_hetzner
+  ansible.builtin.template:
+    src: cloudcredentials.j2
+    dest: "{{ architect_user_dir }}/.cloudcredentials"
+    owner: "{{ architect_user }}"
+    mode: '0600'
+
+- name: mnt_hetzner | Create mount directories
+  tags: archivi,mnt_hetzner
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    mode: '0755'
+  with_items:
+    - /mnt/storagebox
+
+- name: mnt_hetzner | Ensure SMB credentials file exists
+  tags: archivi,mnt_hetzner
+  ansible.builtin.file:
+    path: "{{ architect_user_dir }}/.cloudcredentials"
+    state: touch
+    owner: "{{ architect_user }}"
+    group: "{{ architect_user }}"
+    mode: '0600'
+
+
+- name: mnt_hetzner | Mount the SMB share
+  tags: archivi,mnt_hetzner
+  ansible.builtin.mount:
+    path: /mnt/storagebox
+    src: "//{{ hetzner_storagebox_user }}.your-storagebox.de/backup"
+    fstype: cifs
+    opts: "credentials={{ architect_user_dir }}/.cloudcredentials,iocharset=utf8,rw,_netdev,uid={{ architect_user}},gid={{ architect_user}},file_mode=0660,dir_mode=0770"
+    state: mounted
+  become: true
+
+
+#-----------------------------------------------------
+#   post_tasks
+#
+
+
+#-----------------------------------------------------
+#   Handlers
+#
+
+
+#-----------------------------------------------------
+#   roles
+#
+
+
+
+
