@@ -70,7 +70,7 @@
     force: yes
 
 - name: BORG | Ensure borg_restore_mount directory exists
-  tags: archivi,borg,borg_update
+  tags: archivi,borg,borg_update,restoremount
   file:
     path: "{{ borg_restore_mount }}"
     state: directory
