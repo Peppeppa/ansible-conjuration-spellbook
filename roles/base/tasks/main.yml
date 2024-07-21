@@ -20,9 +20,9 @@
 
 - block:
  #Erstellen von Usern
+  - import_tasks: users/architect_user.yml
   - import_tasks: users/main_user.yml
   - import_tasks: users/root.yml
-  - import_tasks: users/architect_user.yml
 
   # Einrichten der ansible umgebung
   - import_tasks: ansible_setup.yml

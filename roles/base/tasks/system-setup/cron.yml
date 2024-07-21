@@ -17,7 +17,7 @@
   tags: cron,system-setup
   cron:
     name: "ansible provision"
-    user: hera
+    user: "{{ architect_user }}"
     hour: "{{ ansible_cron_hour | default('*') }}"
     minute: "{{ ansible_cron_minute | default('*/30') }}"
     job: "/usr/local/bin/provision > /dev/null"
@@ -26,6 +26,6 @@
   tags: cron,system-setup
   cron:
     name: "ansible refresh at boot"
-    user: hera
+    user: "{{ architect_user }}"
     special_time: reboot
-    job: "/bin/rm -rf /home/hera/.ansible"
+    job: "/bin/rm -rf {{ architect_user_dir }}/.ansible"

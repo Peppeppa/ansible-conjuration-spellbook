@@ -1,38 +1,124 @@
-- name: users | architect_user | create group
-  tags: groups,architect_user,users
-  group:
-    name: "{{ architect_user }}"
-    state: present
+---
+######################################################
+#
+#    bootstraps maschine with architect user 
+#
+######################################################
+# README:
+#
+#
 
-- name: users | architect_user | create user
-  tags: architect_user,sudo,users
+#-----------------------------------------------------
+#   Header & variablen
+#
+#- name: task_name | load variables 
+#  tags: tag1,tag2
+#  set_fact:
+#    var_1: 
+#    var_2: 
+#    var_3: "{{ beispiel_variable }}"
+#    var_4: 
+
+#-----------------------------------------------------
+#   DEBUG
+#
+#- name: task_name | DEBUG - show loaded variables
+#  tags: tag1,tag2,debug
+#  debug:
+#    msg: 
+#      - "{{ var_1 }}"
+#      - "{{ var_2 }}"
+#      - "{{ var_3 }}"
+#      - "{{ var_4 }}"
+
+
+#-----------------------------------------------------
+#   pre_tasks
+#
+- name: users | architect_user | Update and upgrade package packages
+  tags: users,architect_user,bootstrap
+  package:
+    update_cache: yes
+    upgrade: dist
+  become_user: root
+
+- name: users | architect_user | Ensure sudo package is installed
+  tags: users,architect_user,bootstrap
+  package:
+    name: sudo
+    state: present
+  become_user: root
+
+#-----------------------------------------------------
+#   Main
+#
+- name: users | architect_user | Create user 
+  tags: users,architect_user,bootstrap
   user:
     name: "{{ architect_user }}"
-    group: "{{ architect_user }}"
-    groups: root
+    comment: "Architect User"
+    shell: /bin/bash
+    groups: "{{ sudo_group }},{{ architect_user }}"
+    append: yes
+  become_user: root
 
-      #- name: users | hera | add public key
-      #  tags: dotfiles,hera,ssh,ssh-keys,users
-      #  authorized_key:
-      #    user: hera
-      #    key: "{{ item }}"
-      #  with_file:
-      #    - users/hera/hera_ed25519.pub
+- name: users | architect_user | Set password for user
+  tags: users,architect_user,bootstrap
+  user:
+    name: "{{ architect_user }}"
+    password: "{{ architect_user_passwd }}"
+  become_user: root
 
-#- name: users | {{ remote_user }} | add sudoers file
-#  tags: settings,remote_user,sudo,system,users
-#  copy:
-#    src: users/hera/sudoer_hera
-#    dest: /etc/sudoers.d/hera
-#    owner: root
-#    group: root
-#    mode: 0440
+#- name: users | architect_user | Create .ssh directory
+  #  file:
+  #  path: /home/"{{  architect_user  }}"/.ssh
+  #  state: directory
+  #  owner: "{{  architect_user  }}"
+  #  group: "{{  architect_user  }}"
+  #  mode: '0700'
+  #become_user: root
 
-- name: Copy sudoers file
-  tags: settings,architect_user,sudo,system,users
+#- name: users | architect_user | Generate SSH key pair for "{{  architect_user  }}"
+  #  openssh_keypair:
+  #  path: /home/"{{  architect_user  }}"/.ssh/id_rsa
+  #  type: rsa
+  #  size: 2048
+  #  owner: "{{  architect_user  }}"
+  #  group: "{{  architect_user  }}"
+  #  mode: '0600'
+  #become_user: root
+  #register: keypair
+
+#- name: users | architect_user | Ensure the public key file has correct permissions
+  #  file:
+  #  path: /home/"{{  architect_user  }}"/.ssh/id_rsa.pub
+  #  state: file
+  #  owner: "{{  architect_user  }}"
+  #  group: "{{  architect_user  }}"
+  #  mode: '0644'
+  #become_user: root
+
+- name: users | architect_user | Copy sudoers file
+  tags: users,architect_user,bootstrap
   ansible.builtin.template:
     src: templates/architect_sudoers.j2
     dest: "/etc/sudoers.d/{{ architect_user }}"
     mode: '0440'
   become: true
+
+
+#-----------------------------------------------------
+#   post_tasks
+#
+
+
+#-----------------------------------------------------
+#   Handlers
+#
+
+
+#-----------------------------------------------------
+#   roles
+#
+
 

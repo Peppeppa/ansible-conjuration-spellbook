@@ -1,11 +1,11 @@
 - name: users | main_user | create group
-  tags: users,main_user,groups
+  tags: users,main_user
   group:
     name: "{{ main_user }}"
     state: present
 
 - name: users | main_user | create user 
-  tags: users,main_user,sudo
+  tags: users,main_user
   user:
     name: "{{ main_user }}"
     groups: "{{ sudo_group }}"
@@ -15,7 +15,7 @@
     shell: /bin/bash
 
 - name: users | main_user | add sudoers file
-  tags: users,main_user,sudo,system
+  tags: users,main_user
   ansible.builtin.template:
     src: templates/main_sudoers.j2
     dest: "/etc/sudoers.d/{{ main_user}}"
@@ -23,18 +23,18 @@
   become: true
 
 - name: users | main_user | create .ssh directory
-  tags: dotfiles,main_user,ssh,users
+  tags: users,main_user
   file:
     path: "{{ item.dir}}"
     state: directory
-    owner: medvidec
-    group: medvidec
+    owner: "{{ main_user }}"
+    group: "{{ main_user }}"
     mode: 0700
   with_items:
     - { dir: "{{ main_user_dir }}/.ssh"}
 
 - name: users | main_user | setup authorized keys
-  tags: users,main_user,ssh,users
+  tags: users,main_user
   ansible.posix.authorized_key:
     user: "{{ main_user }}"
     state: present
