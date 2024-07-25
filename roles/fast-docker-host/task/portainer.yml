@@ -1,28 +1,28 @@
 ---
 #- name: Ensure Docker is installed
-#  tags: apptimus,portainer
+#  tags: fastdocker,portainer
 #  apt:
 #    name: docker.io
 #    state: present
 #    update_cache: yes
 
 - name: Load docker ports variables
-  tags: apptimus,portainer
+  tags: fastdocker,portainer
   include_vars: ../../vars/docker-ports.yml
 
 - name: Debug portainer ports
-  tags: apptimus,portainer
+  tags: fastdocker,portainer
   debug:
     msg: "Portainer will use ports {{ portainer_1_1 }} and {{ portainer_1_2 }}"
 
 - name: Download Portainer image
-  tags: apptimus,portainer
+  tags: fastdocker,portainer
   docker_image:
     name: portainer/portainer-ce
     source: pull
 
 - name: Create Portainer container
-  tags: apptimus,portainer
+  tags: fastdocker,portainer
   docker_container:
     name: portainer
     image: portainer/portainer-ce
@@ -36,7 +36,7 @@
       - portainer_data:/data
 
 - name: Ensure portainer_data volume is created
-  tags: apptimus,portainer
+  tags: fastdocker,portainer
   docker_volume:
     name: portainer_data
     state: present

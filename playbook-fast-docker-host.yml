@@ -30,15 +30,8 @@
   roles:
     - base
 
-    # run roles
-- hosts: apptimus-prime
-  tags: docker-host
+- hosts: fast-docker
+  tags: fastdocker
   become: true
   roles:
-    - apptimus-prime.docker
-
-- hosts: custos-archivi-primus
-  tags: backup-offsite
-  become: true
-  roles:
-    - custos-archivi-primus
+    - fast-docker-host

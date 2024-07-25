@@ -1,17 +1,17 @@
 ---
 - name: Debug role-specific variables
-  tags: apptimus,setup-smb
+  tags: fastdocker,setup-smb
   debug:
     msg: "{{ ansible_role_name }} | {{ architect_user }} | {{ architect_user_dir }}/.smbcredentials | {{ nas_mount_point }} | //{{ nas_path }}{{ ansible_role_name }} | "
 
 - name: Install cifs-utils
-  tags: apptimus,setup-smb
+  tags: fastdocker,setup-smb
   ansible.builtin.package:
     name: cifs-utils
     state: present
 
 - name: Create smbcredentials file
-  tags: apptimus,setup-smb
+  tags: fastdocker,setup-smb
   ansible.builtin.template:
     src: templates/smbcredentials.j2
     dest: "{{ architect_user_dir }}/.smbcredentials"
@@ -20,20 +20,20 @@
     mode: "0600"
 
 - name: Create mount directory
-  tags: apptimus,setup-smb
+  tags: fastdocker,setup-smb
   ansible.builtin.file:
     path: "{{ nas_mount_point }}"
     state: directory
     mode: '0755'
 
 - name: restart target maschine to make smb work
-  tags: apptimus,setup-smb
+  tags: fastdocker,setup-smb
   reboot:
     reboot_timeout: 300
     pre_reboot_delay: 30
 
 - name: Mount SMB share
-  tags: apptimus,setup-smb
+  tags: fastdocker,setup-smb
   ansible.builtin.mount:
     path: "{{ nas_mount_point }}"
     src: "//{{ nas_path }}{{ ansible_role_name }}"
@@ -43,7 +43,7 @@
   become: true
 
 #- name: Set permissions on /mnt/storage
-#  tags: apptimus,setup-smb,permission
+#  tags: fastdocker,setup-smb,permission
 #  ansible.builtin.file:
 #    path: /mnt
 #    owner: root #hera
