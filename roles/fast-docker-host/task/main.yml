@@ -1,0 +1,24 @@
+---
+# tasks file for apptimus-prime.docker
+#- name: Lade distributionsspezifische Variablen
+#  include_vars: "{{ item }}"
+#  with_first_found:
+#    - "{{ ansible_distribution }}.yml"
+#  tags: always
+#
+- name: Include vars from vars.yml
+  include_vars: "{{ role_path }}/vars/docker-ports.yml"
+#
+#- name: Include vars from vault.yml
+#  include_vars: "{{ role_path }}/vars/vault.yml"
+#
+# Install services
+#
+- block:
+#  - import_tasks: "{{ role_path }}/tasks/setup-tasks/docker-light.yml"
+  - import_tasks: "{{ role_path }}/tasks/setup-tasks/docker-ce-complete.yml"
+  - import_tasks: "{{ role_path }}/tasks/setup-tasks/portainer.yml"
+  - import_tasks: "{{ role_path }}/tasks/setup-tasks/setup-smb.yml"
+    
+    #    Apps     
+  - import_tasks: "{{ role_path }}/tasks/docker-compose/paperless.yml"

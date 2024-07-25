@@ -1,0 +1,10 @@
+# Ports für docker
+# v
+#
+#syntax:  name des containers/applikation
+#app_1_1: 0001
+#app_1_2: 0002
+#
+portainer_1_1: 8000
+portainer_1_2: 9443
+
