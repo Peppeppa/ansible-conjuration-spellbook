@@ -30,7 +30,7 @@
   roles:
     - base
 
-- hosts: fast-docker
+- hosts: all
   tags: fastdocker
   become: true
   roles:
