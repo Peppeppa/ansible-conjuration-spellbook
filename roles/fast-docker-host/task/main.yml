@@ -15,10 +15,7 @@
 # Install services
 #
 - block:
-#  - import_tasks: "{{ role_path }}/tasks/setup-tasks/docker-light.yml"
-  - import_tasks: "{{ role_path }}/tasks/setup-tasks/docker-ce-complete.yml"
-  - import_tasks: "{{ role_path }}/tasks/setup-tasks/portainer.yml"
-  - import_tasks: "{{ role_path }}/tasks/setup-tasks/setup-smb.yml"
+  - import_tasks: "{{ role_path }}/tasks/docker-ce-complete.yml"
+  - import_tasks: "{{ role_path }}/tasks/portainer.yml"
+  - import_tasks: "{{ role_path }}/tasks/setup-smb.yml"
     
-    #    Apps     
-  - import_tasks: "{{ role_path }}/tasks/docker-compose/paperless.yml"

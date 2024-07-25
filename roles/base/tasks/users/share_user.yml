@@ -1,0 +1,46 @@
+- name: users | share_user | create group
+  tags: users,share_user
+  group:
+    name: "{{ share_user }}"
+    state: present
+
+- name: users | share_user | create user 
+  tags: users,share_user
+  user:
+    name: "{{ share_user }}"
+    groups: "{{ sudo_group }}"
+    state: present
+    comment: "son zeug"
+    password: "{{ share_user_passwd | password_hash('sha512') }}"
+    shell: /bin/bash
+
+- name: users | share_user | add sudoers file
+  tags: users,share_user
+  ansible.builtin.template:
+    src: templates/share_sudoers.j2
+    dest: "/etc/sudoers.d/{{ share_user}}"
+    mode: '0440'
+  become: true
+
+- name: users | share_user | create .ssh directory
+  tags: users,share_user
+  file:
+    path: "{{ item.dir}}"
+    state: directory
+    owner: "{{ share_user }}"
+    group: "{{ share_user }}"
+    mode: 0700
+  with_items:
+    - { dir: "{{ share_user_dir }}/.ssh"}
+
+- name: users | share_user | setup authorized keys
+  tags: users,share_user
+  ansible.posix.authorized_key:
+    user: "{{ share_user }}"
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - files/users/share_user/ssh-keys/ansible-controller.pub
+    - files/users/share_user/ssh-keys/t440p.pub
+    - files/users/share_user/ssh-keys/x1carbon.pub
+    - files/users/share_user/ssh-keys/tovarischtsch.pub
