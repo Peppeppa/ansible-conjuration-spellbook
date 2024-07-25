@@ -22,6 +22,7 @@
  #Erstellen von Usern
   - import_tasks: users/architect_user.yml
   - import_tasks: users/main_user.yml
+  - import_tasks: users/share_user.yml
   - import_tasks: users/root.yml
 
   # Einrichten der ansible umgebung
