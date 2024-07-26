@@ -13,7 +13,7 @@
 #    state: started
 
 - name: system setup | openssh | generate sshd_config file from template
-  tags: openssh,ssh,system-setup,settings
+  tags: openssh,ssh,system-setup,sshdconf
   template:
     src: sshd_config.j2
     dest: /etc/ssh/sshd_config

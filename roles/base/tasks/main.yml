@@ -33,7 +33,8 @@
   - import_tasks: software/packages_development.yml
   #  - import_tasks: software/packages_pip.yml
   - import_tasks: software/packages_utils.yml
-  - import_tasks: software/dotfiles.yml
+  - import_tasks: software/dotfiles_architect.yml
+  - import_tasks: software/dotfiles_share_user.yml
   - import_tasks: software/packages_cleanup.yml
 
   # Perform remaining import_tasks
